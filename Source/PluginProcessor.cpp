@@ -62,9 +62,10 @@ auto getGeneralFilterQualityName() { return juce::String("General Filter Quality
 auto getGeneralFilterGainName() { return juce::String("General Filter Gain"); }
 
 //==============================================================================
-AudiopluginAudioProcessor::AudiopluginAudioProcessor()
+AudiopluginAudioProcessor::AudiopluginAudioProcessor() :
+    dspOrder(DSP_Order())
 #ifndef JucePlugin_PreferredChannelConfigurations
-     : AudioProcessor (BusesProperties()
+      , AudioProcessor (BusesProperties()
                      #if ! JucePlugin_IsMidiEffect
                       #if ! JucePlugin_IsSynth
                        .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
@@ -562,7 +563,7 @@ void AudiopluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     // [DONE]: add APVTS
     // [DONE]: create audio parameters for all dsp choices
     // TODO: update DSP ahere from audio parameters
-    // TODO: save/load settings
+    // [DONE]: save/load settings
     // TODO: save/load DSP order
     // TODO: Drag-To-Reorder GUI
     // TODO: GUI design for each DSP instance?
@@ -580,10 +581,10 @@ void AudiopluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     // try to pull
     while (dspOrderFifo.pull(newDSPOrder))
     {
-        // continue
+        
     }
 
-    // if you pulled, replace dspOrder
+    // if you pulled successfully, replace dspOrder
     if (newDSPOrder != DSP_Order())
     {
         dspOrder = newDSPOrder;
@@ -611,9 +612,8 @@ void AudiopluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
             dspPointers[i] = &generalFilter;
             break;
         case DSP_Option::END_OF_LIST:
-            jassertfalse;
-            break;
         default:
+            jassertfalse;
             break;
         }
     }
@@ -624,7 +624,7 @@ void AudiopluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
     for (size_t i = 0; i < dspPointers.size(); ++i)
     {
-        if (dspPointers[i])
+        if (dspPointers[i] != nullptr)
         {
             dspPointers[i]->process(context);
         }
@@ -639,7 +639,8 @@ bool AudiopluginAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* AudiopluginAudioProcessor::createEditor()
 {
-    return new AudiopluginAudioProcessorEditor (*this);
+    //return new AudiopluginAudioProcessorEditor (*this);
+    return new juce::GenericAudioProcessorEditor(*this);
 }
 
 //==============================================================================
@@ -648,12 +649,21 @@ void AudiopluginAudioProcessor::getStateInformation (juce::MemoryBlock& destData
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
+
+    juce::MemoryOutputStream mos(destData, false);
+    apvts.state.writeToStream(mos);
 }
 
 void AudiopluginAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+
+    auto tree = juce::ValueTree::readFromData(data, sizeInBytes);
+    if (tree.isValid())
+    {
+        apvts.replaceState(tree);
+    }
 }
 
 //==============================================================================
