@@ -130,6 +130,13 @@ bool AudiopluginAudioProcessor::isBusesLayoutSupported (const BusesLayout& layou
 }
 #endif
 
+juce::AudioProcessorValueTreeState::ParameterLayout AudiopluginAudioProcessor::createParameterLayout()
+{
+    juce::AudioProcessorValueTreeState::ParameterLayout layout;
+
+    return layout;
+}
+
 void AudiopluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
@@ -145,7 +152,7 @@ void AudiopluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    // TODO: add APVTS
+    // [DONE]: add APVTS
     // TODO: create audio parameters for all dsp choices
     // TODO: update DSP ahere from audio parameters
     // TODO: save/load settings
@@ -160,7 +167,6 @@ void AudiopluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     // TODO: thread-safe filter updating [BONUS]
     // TODO: pre/post filtering [BONUS]
     // TODO: delay module [BONUS]
-
 
     auto newDSPOrder = DSP_Order();
 
