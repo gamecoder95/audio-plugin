@@ -28,7 +28,28 @@ AudiopluginAudioProcessor::AudiopluginAudioProcessor()
                        )
 #endif
 {
+    auto phaserParams = std::array {
+        &phaserRateHz,
+        &phaserCenterFreqHz,
+        &phaserDepthPercent,
+        &phaserFeedbackPercent,
+        &phaserMixPercent,
+    };
 
+    auto phaserFuncs = std::array{
+        &getPhaserRateName,
+        &getPhaserCenterFreqName,
+        &getPhaserDepthName,
+        &getPhaserFeedbackName,
+        &getPhaserMixName,
+    };
+
+    for (size_t i = 0; i < phaserParams.size(); ++i)
+    {
+        auto ptrToParamPtr = phaserParams[i];
+        *ptrToParamPtr = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter(phaserFuncs[i]()));
+        jassert(*ptrToParamPtr != nullptr);
+    }
 }
 
 AudiopluginAudioProcessor::~AudiopluginAudioProcessor()

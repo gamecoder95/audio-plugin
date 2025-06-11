@@ -83,8 +83,8 @@ public:
         Mix: [0, 1]
     */
 
-    juce::AudioParameterFloat* phaserRatehz = nullptr;
-    juce::AudioParameterFloat* phaserCenterFreqhz = nullptr;
+    juce::AudioParameterFloat* phaserRateHz = nullptr;
+    juce::AudioParameterFloat* phaserCenterFreqHz = nullptr;
     juce::AudioParameterFloat* phaserDepthPercent = nullptr;
     juce::AudioParameterFloat* phaserFeedbackPercent = nullptr;
     juce::AudioParameterFloat* phaserMixPercent = nullptr;
