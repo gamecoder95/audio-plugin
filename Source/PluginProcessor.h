@@ -88,6 +88,9 @@ public:
     juce::AudioParameterFloat* chorusFeedbackPercent = nullptr;
     juce::AudioParameterFloat* chorusMixPercent = nullptr;
 
+    // Overdrive parameter pointers
+    juce::AudioParameterFloat* overdriveSaturation = nullptr;
+    
 private:
 
     DSP_Order dspOrder;
