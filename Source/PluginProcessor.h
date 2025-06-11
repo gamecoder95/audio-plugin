@@ -90,6 +90,12 @@ public:
 
     // Overdrive parameter pointers
     juce::AudioParameterFloat* overdriveSaturation = nullptr;
+
+    // Ladder Filter parameter pointers
+    juce::AudioParameterChoice* ladderFilterMode = nullptr;
+    juce::AudioParameterFloat* ladderFilterCutoffHz = nullptr;
+    juce::AudioParameterFloat* ladderFilterResonance = nullptr;
+    juce::AudioParameterFloat* ladderFilterDrive = nullptr;
     
 private:
 
