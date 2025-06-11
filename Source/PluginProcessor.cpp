@@ -562,7 +562,9 @@ void AudiopluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
     // [DONE]: add APVTS
     // [DONE]: create audio parameters for all dsp choices
-    // TODO: update DSP ahere from audio parameters
+    // [DONE]: update DSP here from audio parameters
+    // TODO: update general filter coefficients
+    // TODO: add smoothers for all param updates
     // [DONE]: save/load settings
     // TODO: save/load DSP order
     // TODO: Drag-To-Reorder GUI
@@ -575,6 +577,29 @@ void AudiopluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     // TODO: thread-safe filter updating [BONUS]
     // TODO: pre/post filtering [BONUS]
     // TODO: delay module [BONUS]
+
+    // Set phaser params
+    phaser.dsp.setRate(phaserRateHz->get());
+    phaser.dsp.setCentreFrequency(phaserCenterFreqHz->get());
+    phaser.dsp.setDepth(phaserDepthPercent->get());
+    phaser.dsp.setFeedback(phaserFeedbackPercent->get());
+    phaser.dsp.setMix(phaserMixPercent->get());
+
+    // Set chorus params
+    chorus.dsp.setRate(chorusRateHz->get());
+    chorus.dsp.setDepth(chorusDepthPercent->get());
+    chorus.dsp.setCentreDelay(chorusCenterDelayMs->get());
+    chorus.dsp.setFeedback(chorusFeedbackPercent->get());
+    chorus.dsp.setMix(chorusMixPercent->get());
+
+    // Set overdrive params
+    overdrive.dsp.setDrive(overdriveSaturation->get());
+
+    // Set ladder filter params
+    ladderFilter.dsp.setMode(static_cast<juce::dsp::LadderFilterMode>(ladderFilterMode->getIndex()));
+    ladderFilter.dsp.setCutoffFrequencyHz(ladderFilterCutoffHz->get());
+    ladderFilter.dsp.setResonance(ladderFilterResonance->get());
+    ladderFilter.dsp.setDrive(ladderFilterDrive->get());
 
     auto newDSPOrder = DSP_Order();
 
